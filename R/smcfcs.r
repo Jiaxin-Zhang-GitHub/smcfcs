@@ -113,9 +113,9 @@
 #' @import stats
 #' @importFrom survival Surv
 #' @export
-smcfcs <- function(originaldata, smtype, smformula, method, predictorMatrix = NULL, m = 5, numit = 10, rjlimit = 1000, noisy = FALSE, errorProneMatrix = NULL, restrictions = NULL) {
+smcfcs <- function(originaldata, smtype, smformula, method, predictorMatrix = NULL, m = 5, numit = 10, rjlimit = 1000, noisy = FALSE, errorProneMatrix = NULL, restrictions = NULL, is.bootSmcfcs = FALSE) {
   # call core  smcfcs function, passing through arguments
-  smcfcs.core(originaldata, smtype, smformula, method, predictorMatrix, m, numit, rjlimit, noisy, errorProneMatrix = errorProneMatrix, restrictions = restrictions)
+  smcfcs.core(originaldata, smtype, smformula, method, predictorMatrix, m, numit, rjlimit, noisy, errorProneMatrix = errorProneMatrix, restrictions = restrictions, is.bootSmcfcs = is.bootSmcfcs)
 }
 
 #' Substantive model compatible fully conditional specification imputation of covariates for case cohort studies
@@ -225,7 +225,7 @@ smcfcs.dtsam <- function(originaldata, smformula, method, timeEffects = "factor"
 }
 
 # this is the core of the smcfcs function, called by wrapper functions for certain different substantive models
-smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix = NULL, m = 5, numit = 10, rjlimit = 1000, noisy = FALSE, errorProneMatrix = NULL,restrictions = NULL,
+smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix = NULL, m = 5, numit = 10, rjlimit = 1000, noisy = FALSE, errorProneMatrix = NULL,restrictions = NULL, is.bootSmcfcs = FALSE,
                         ...) {
   # get extra arguments passed in ...
   extraArgs <- list(...)
@@ -431,16 +431,19 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           sep = ""
         ))
       } else {
-        # Debug: ignore the imputation method if a variable is originally incomplete but happened to be complete in the boot sample.
+        # Debug: When using bootSmcfcs, ignore the imputation method if a variable is originally incomplete but happened to be complete in the boot sample.
         if (sum(r[, colnum]) == n) {
-          # stop(paste("An imputation method has been specified for ", colnames(originaldata)[colnum],
-          #   ", but it appears to be fully observed.",
-          #   sep = ""
-          method[colnum] <- "" 
-          print(paste("The specified imputation method for ", colnames(originaldata)[colnum],
-                     " has been omittied since it appears to be fully observed.",
-                     sep = ""
-          ))
+          if(!is.bootSmcfcs){
+            stop(paste("An imputation method has been specified for ", colnames(originaldata)[colnum],
+              ", but it appears to be fully observed.",
+              sep = ""
+          } else {
+           method[colnum] <- "" 
+           print(paste("The specified imputation method for ", colnames(originaldata)[colnum],
+                      " has been omittied since it appears to be fully observed.",
+                      sep = ""
+           ))
+          }
         }
       }
     } else {
