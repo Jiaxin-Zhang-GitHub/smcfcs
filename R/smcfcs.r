@@ -431,10 +431,15 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           sep = ""
         ))
       } else {
+        # Debug: ignore the imputation method if a variable is originally incomplete but happened to be complete in the boot sample.
         if (sum(r[, colnum]) == n) {
-          stop(paste("An imputation method has been specified for ", colnames(originaldata)[colnum],
-            ", but it appears to be fully observed.",
-            sep = ""
+          # stop(paste("An imputation method has been specified for ", colnames(originaldata)[colnum],
+          #   ", but it appears to be fully observed.",
+          #   sep = ""
+          method[colnum] <- "" 
+          print(paste("The specified imputation method for ", colnames(originaldata)[colnum],
+                     " has been omittied since it appears to be fully observed.",
+                     sep = ""
           ))
         }
       }
