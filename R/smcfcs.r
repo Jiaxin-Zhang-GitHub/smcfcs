@@ -437,6 +437,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             stop(paste("An imputation method has been specified for ", colnames(originaldata)[colnum],
               ", but it appears to be fully observed.",
               sep = ""
+            ))
           } else {
            method[colnum] <- "" 
            print(paste("The specified imputation method for ", colnames(originaldata)[colnum],
