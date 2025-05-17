@@ -1103,6 +1103,10 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
 
           directImpProbs <- outcomeDensCovDens / rowSums(outcomeDensCovDens)
+          
+            # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
+            imputationNeeded <- imputationNeeded[!is.na(directImpProbs[,1])]
+            directImpProbs <- directImpProbs[!is.na(directImpProbs[,1]),]
 
           if ((method[targetCol] == "logreg") | (method[targetCol] == "brlogreg")) {
             directImpProbs <- directImpProbs[, 2]
