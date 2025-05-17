@@ -1447,6 +1447,8 @@ firstnonna <- function(x) {
 }
 
 catdraw <- function(prob) {
+  # Debug: set probability to 0
+  prob[is.na(prob)] <- 0
   (1:length(prob))[rmultinom(1, size = 1, prob = prob) == 1]
 }
 
