@@ -1118,9 +1118,8 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
             directImpProbs[is.na(directImpProbs)] <- 0  
             imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
-            directImpProbs <- directImpProbs[rowSums(directImpProbs) > 0,]
-            
-            imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[apply(directImpProbs, 1, catdraw)]
+            imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[na.omit(apply(directImpProbs, 1, catdraw))]
+          
           }
 
           # update passive variables
@@ -1450,7 +1449,12 @@ firstnonna <- function(x) {
 }
 
 catdraw <- function(prob) {
-  (1:length(prob))[rmultinom(1, size = 1, prob = prob) == 1]
+  # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
+  if(sum(prob) == 0){
+    NaN
+  } else{
+    (1:length(prob))[rmultinom(1, size = 1, prob = prob) == 1]
+  }
 }
 
 modPostDraw <- function(modobj) {
