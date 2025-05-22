@@ -226,7 +226,8 @@ smcfcs.dtsam <- function(originaldata, smformula, method, timeEffects = "factor"
 }
 
 # this is the core of the smcfcs function, called by wrapper functions for certain different substantive models
-smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix = NULL, m = 5, numit = 10, rjlimit = 1000, noisy = FALSE, errorProneMatrix = NULL,restrictions = NULL, 
+smcfcs.core <- function(originaldata, smtype = "brlogistic", smformula = "diagidentified ~ q4abuseYesNo + q4abuseYesNo*q2matagebirth2cat+q4abuseYesNo*q1qual2cat + q4epdsco13 + q4b4anx + q4g9hcc + q8abuseYesNo + q8a1numbchild2cat + q8physhealth2cat + q8f6emo + nocontri + q8j3inc + q8epdsco13 + q8b1o + q1cobcat + q1mari2cat + q2matagebirth2cat + q1qual2cat + q1priormiscYN + q1priortermYN + q1d18eve + q1f4empl2cat + q1f6pen + q1epdsco13 + q1b1anx + q1smoke2cat + q2a5weig + m10SDQTotal2cat + m10c2BAI2cat + m10SDQinternal2cat + m10SDQexternal2cat", 
+                   method=c("",rep("brlogreg",14),"mlogit","",rep("brlogreg",8),"norm",rep("brlogreg",4)), predictorMatrix = NULL, m = 5, numit = 10, rjlimit = 1000, noisy = FALSE, errorProneMatrix = NULL,restrictions = NULL, 
                         ...) {
   # get extra arguments passed in ...
   extraArgs <- list(...)
