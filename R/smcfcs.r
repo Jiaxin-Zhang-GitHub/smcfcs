@@ -1116,8 +1116,14 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           } else {
             
             # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
+            print(directImpProbs)
+
             directImpProbs[is.na(directImpProbs)] <- 0  
             imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
+            
+            print(c(imp,cyclenum,imputationNeeded))
+            print(directImpProbs)
+
             imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[na.omit(apply(directImpProbs, 1, catdraw))]
           
           }
