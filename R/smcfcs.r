@@ -769,15 +769,20 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
         } else if (method[targetCol] == "brlogreg") {
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
+          # Debug:
+          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(xmod) }
           newbeta <- modPostDraw(xmod)
+          # Debug:
+          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(newbeta) }
           if ((smtype == "casecohort") | (smtype == "nestedcc")) {
             xfitted <- expit(model.matrix(xmodformula, data = imputations[[imp]]) %*% newbeta)
           } else {
+            # Debug:
+            if(imp==1 & cyclenum == 8 & targetCol == 5) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
             xfitted <- expit(model.matrix(xmod) %*% newbeta)
 
             # Debug:
-            print.ind <- (1:n)[r[, targetCol] == 0]
-            print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])  
+            if(imp==1 & cyclenum == 8 & targetCol == 5) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
           }
         } else if (method[targetCol] == "poisson") {
           xmod <- glm(xmodformula, family = "poisson", data = xmoddata)
@@ -815,13 +820,13 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           linpreds <- matrix((VGAM::model.matrix(xmod.dummy)) %*% newbeta, byrow = TRUE, ncol = (nlevels(imputations[[imp]][, targetCol]) - 1))
           
           # Debug:
-          print(paste0("imputation",imp,"iteration",cyclenum,"linpreds"))
-          print.ind <- (1:n)[r[, targetCol] == 0]
-          print(linpreds[print.ind,])
+          #print(paste0("imputation",imp,"iteration",cyclenum,"linpreds"))
+          #print.ind <- (1:n)[r[, targetCol] == 0]
+          #print(linpreds[print.ind,])
           denom <- 1 + rowSums(exp(linpreds))
-          print("denom");print(denom[print.ind])
+          #print("denom");print(denom[print.ind])
           xfitted <- cbind(1 / denom, exp(linpreds) / denom)
-          print("xfitted");print(xfitted[print.ind,])
+          #print("xfitted");print(xfitted[print.ind,])
           
         }
         if (noisy == TRUE) {
@@ -1030,11 +1035,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             numberOutcomes <- 2
             fittedMean <- cbind(1 - xfitted, xfitted)
             # Debug: 
-            print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"fittedMean:"));print(fittedMean[imputationNeeded,])
+            if(imp==1 & cyclenum == 8 & targetCol == 5) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"fittedMean:"));print(fittedMean[imputationNeeded,])}
           } else {
             numberOutcomes <- nlevels(imputations[[imp]][, targetCol])
             # Debug:
-            print(paste0("numberOutcomes",numberOutcomes))
+            #print(paste0("numberOutcomes",numberOutcomes))
             fittedMean <- xfitted
           }
 
@@ -1104,7 +1109,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             }
 
             # Debug:
-            print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])
+            if(imp==1 & cyclenum == 8 & targetCol == 5) {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
             outcomeDensCovDens[, xMisVal] <- outcomeDens * fittedMean[imputationNeeded, xMisVal]
           }
 
