@@ -774,6 +774,10 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             xfitted <- expit(model.matrix(xmodformula, data = imputations[[imp]]) %*% newbeta)
           } else {
             xfitted <- expit(model.matrix(xmod) %*% newbeta)
+
+            # Debug:
+            print.ind <- (1:n)[r[, targetCol] == 0]
+            print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])  
           }
         } else if (method[targetCol] == "poisson") {
           xmod <- glm(xmodformula, family = "poisson", data = xmoddata)
@@ -1100,7 +1104,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             }
 
             # Debug:
-            if(method[targetCol] == "mlogit") {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
+            print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])
             outcomeDensCovDens[, xMisVal] <- outcomeDens * fittedMean[imputationNeeded, xMisVal]
           }
 
