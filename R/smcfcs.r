@@ -1414,7 +1414,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             outcomeModBeta <- modPostDraw(ymod)
             outmodxb <- model.matrix(as.formula(smformula), imputations[[imp]]) %*% outcomeModBeta
             prob <- expit(outmodxb[imputationNeeded])
-            imputations[[imp]][imputationNeeded, outcomeCol] <- rbinom(length(imputationNeeded), 1, prob)
+            # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
+            prob[is.na(prob)] <- 0  
+            imputationNeeded <- imputationNeeded[prob > 0]
+            
+            imputations[[imp]][imputationNeeded, outcomeCol] <- rbinom(length(imputationNeeded), 1, na.omit(prob))
           }
         }
       } else if (smtype == "flexsurv") {
