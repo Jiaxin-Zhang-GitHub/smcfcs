@@ -768,6 +768,8 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             xfitted <- expit(model.matrix(xmod) %*% newbeta)
           }
         } else if (method[targetCol] == "brlogreg") {
+          # Debug:
+          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(summary(originaldata);print(summary(xmoddata)) }
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
           # Debug:
           if(imp==1 & cyclenum == 8 & targetCol == 5) {print(xmod) }
@@ -1127,7 +1129,8 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
 
           directImpProbs <- outcomeDensCovDens / rowSums(outcomeDensCovDens)
-          
+           # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
+            if(imp==1 & cyclenum == 8 & targetCol == 4) { print(directImpProbs)}
 
           if ((method[targetCol] == "logreg") | (method[targetCol] == "brlogreg")) {
             directImpProbs <- directImpProbs[, 2]
