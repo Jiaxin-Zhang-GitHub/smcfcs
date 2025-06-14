@@ -769,22 +769,22 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
         } else if (method[targetCol] == "brlogreg") {
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 28) {print(summary(originaldata));print(summary(xmoddata)) }
+          if(imp==1 & cyclenum == 8 & targetCol > 27) {print(summary(originaldata));print(summary(xmoddata)) }
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 28) {print(xmod) }
+          if(imp==1 & cyclenum == 8 & targetCol > 27) {print(xmod) }
           newbeta <- modPostDraw(xmod)
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 28) {print(newbeta) }
+          if(imp==1 & cyclenum == 8 & targetCol > 27) {print(newbeta) }
           if ((smtype == "casecohort") | (smtype == "nestedcc")) {
             xfitted <- expit(model.matrix(xmodformula, data = imputations[[imp]]) %*% newbeta)
           } else {
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol == 28) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
+            if(imp==1 & cyclenum == 8 & targetCol > 27) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
             xfitted <- expit(model.matrix(xmod) %*% newbeta)
 
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol == 28) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
+            if(imp==1 & cyclenum == 8 & targetCol > 27) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
           }
         } else if (method[targetCol] == "poisson") {
           xmod <- glm(xmodformula, family = "poisson", data = xmoddata)
@@ -1130,7 +1130,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
 
           directImpProbs <- outcomeDensCovDens / rowSums(outcomeDensCovDens)
            # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
-          if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print("imputationNeeded,latest and directImpProbs");print(imputationNeeded); print(imputations[[imp]][imputationNeeded, targetCol]);print(directImpProbs)}  
+          if(imp == 1 & cyclenum == 8 & targetCol > 27) {print("imputationNeeded,latest and directImpProbs");print(imputationNeeded); print(imputations[[imp]][imputationNeeded, targetCol]);print(directImpProbs)}  
             directImpProbs[is.na(directImpProbs)] <- 0  
             imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
             # Debug:
@@ -1142,12 +1142,12 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             directImpProbs <- directImpProbs[, 2]
             if (is.factor(imputations[[imp]][, targetCol]) == TRUE) {
               # Debug:
-              if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print("updated");print(na.omit(directImpProbs))}  
+              if(imp == 1 & cyclenum == 8 & targetCol > 27) {print("updated");print(na.omit(directImpProbs))}  
               
               imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[1]
-              if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(imputations[[imp]][imputationNeeded, targetCol])}  
+              if(imp == 1 & cyclenum == 8 & targetCol > 27) {print(imputations[[imp]][imputationNeeded, targetCol])}  
               test.ind <- rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) == 1 #
-              if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(test.ind); print(levels(imputations[[imp]][, targetCol])[2]); print(imputations[[imp]][imputationNeeded, targetCol][test.ind])}  
+              if(imp == 1 & cyclenum == 8 & targetCol > 27) {print(test.ind); print(levels(imputations[[imp]][, targetCol])[2]); print(imputations[[imp]][imputationNeeded, targetCol][test.ind])}  
               imputations[[imp]][imputationNeeded, targetCol][test.ind] <- levels(imputations[[imp]][, targetCol])[2]
               print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol))
             } else {
