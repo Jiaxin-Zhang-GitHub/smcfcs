@@ -769,7 +769,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
         } else if (method[targetCol] == "brlogreg") {
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(summary(originaldata);print(summary(xmoddata)) }
+          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(summary(originaldata));print(summary(xmoddata)) }
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
           # Debug:
           if(imp==1 & cyclenum == 8 & targetCol == 5) {print(xmod) }
