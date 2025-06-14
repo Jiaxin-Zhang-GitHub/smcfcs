@@ -1146,8 +1146,9 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
               
               imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[1]
               if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(imputations[[imp]][imputationNeeded, targetCol])}  
-              
-              imputations[[imp]][imputationNeeded, targetCol][rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) == 1] <- levels(imputations[[imp]][, targetCol])[2]
+              test.ind <- rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) == 1 #
+              if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(test.ind); print(levels(imputations[[imp]][, targetCol])[2])}  
+              imputations[[imp]][imputationNeeded, targetCol][test.ind] <- levels(imputations[[imp]][, targetCol])[2]
               print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol))
             } else {
               imputations[[imp]][imputationNeeded, targetCol] <- rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) # Debug
