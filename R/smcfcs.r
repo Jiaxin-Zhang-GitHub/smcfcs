@@ -1086,6 +1086,9 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
                 outcomeDens <- outcomeDens * exp(-H0[[cause]][imputationNeeded] * exp(outmodxb[imputationNeeded])) * (exp(outmodxb[imputationNeeded])^(d[imputationNeeded] == cause))
               }
             }
+
+            # Debug:
+            if(method[targetCol] == "mlogit") {print(fittedMean[imputationNeeded, xMisVal])}
             outcomeDensCovDens[, xMisVal] <- outcomeDens * fittedMean[imputationNeeded, xMisVal]
           }
 
@@ -1116,6 +1119,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           } else {
             
             # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
+            print(imp, cyclenum)
             print(paste0("latest",imputationNeeded))
             print(directImpProbs)
             directImpProbs[is.na(directImpProbs)] <- 0  
