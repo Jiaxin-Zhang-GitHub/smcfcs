@@ -812,11 +812,12 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           
           # Debug:
           print(paste0("imputation",imp,"iteration",cyclenum,"linpreds"))
-          print(linpreds)
+          print.ind <- (1:n)[r[, targetCol] == 0]
+          print(linpreds[print.ind,])
           denom <- 1 + rowSums(exp(linpreds))
-          print("denom");print(denom)
+          print("denom");print(denom[print.ind])
           xfitted <- cbind(1 / denom, exp(linpreds) / denom)
-          print("xfitted");print(xfitted)
+          print("xfitted");print(xfitted[print.ind,])
           
         }
         if (noisy == TRUE) {
@@ -1024,6 +1025,8 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           if ((method[targetCol] == "logreg") | (method[targetCol] == "brlogreg")) {
             numberOutcomes <- 2
             fittedMean <- cbind(1 - xfitted, xfitted)
+            # Debug: 
+            print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"fittedMean:"));print(fittedMean[imputationNeeded,])
           } else {
             numberOutcomes <- nlevels(imputations[[imp]][, targetCol])
             # Debug:
