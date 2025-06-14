@@ -1215,9 +1215,14 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
               reject <- 1 * (log(uDraw) > -(deviation^2) / (2 * array(outcomeModResVar, dim = c(length(imputationNeeded), 1))))
             } else if ((smtype == "logistic") | (smtype == "brlogistic")) {
               outmodxb <- model.matrix(as.formula(smformula), imputations[[imp]]) %*% outcomeModBeta
+              # Debug:
+              print("in rejection sampling, outmodxb, prob, impneeded.out");print(outmodxb)
               prob <- expit(outmodxb[imputationNeeded])
+              print(prob); print(imputations[[imp]][imputationNeeded, outcomeCol])
               prob <- prob * imputations[[imp]][imputationNeeded, outcomeCol] + (1 - prob) * (1 - imputations[[imp]][imputationNeeded, outcomeCol])
               reject <- 1 * (uDraw > prob)
+              # Debug:
+              print("uDraw, prob, reject");print(uDraw);print(prob);print(reject)
             } else if (smtype == "dtsam") {
               prob <- dtsamOutcomeDens(
                 imputations[[imp]], extraArgs$timeEffects, outcomeModBeta, nTimePoints,
@@ -1273,7 +1278,10 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
               }
               reject <- 1 * (uDraw > prob)
             }
+            # Debug: 
+            print("imputationNeeded");print(imputationNeeded)
             imputationNeeded <- imputationNeeded[reject == 1]
+            print("imputationNeeded, update");print(imputationNeeded)
 
             j <- j + 1
           }
