@@ -675,7 +675,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
 
       if (length(partialVars)>0) {
         for (var in 1:length(partialVars)) {
+          # Debug
+          print(paste("current var",var))
         targetCol <- partialVars[var]
+          # Debug
+          print(targetCol)
         if (is.null(predictorMatrix)) {
           predictorCols <- c(partialVars[!partialVars %in% targetCol], fullObsVars)
         } else {
@@ -769,7 +773,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
         } else if (method[targetCol] == "brlogreg") {
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol > 27) {print(summary(originaldata));print(summary(xmoddata)) }
+          if(imp==1 & cyclenum == 8 & targetCol > 26) {print(summary(originaldata));print(summary(xmoddata)) }
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
           # Debug:
           if(imp==1 & cyclenum == 8 & targetCol > 27) {print(xmod) }
@@ -1167,6 +1171,8 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[na.omit(apply(directImpProbs, 1, catdraw))]
             print(imputations[[imp]][imputationNeeded, targetCol])          
           }
+          # Debug:
+          print("if imputation for var 27 is finished")
 
           # update passive variables
           imputations[[imp]] <- updatePassiveVars(imputations[[imp]], method, passiveVars)
