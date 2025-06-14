@@ -769,22 +769,22 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           }
         } else if (method[targetCol] == "brlogreg") {
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(summary(originaldata));print(summary(xmoddata)) }
+          if(imp==1 & cyclenum == 8 & targetCol == 28) {print(summary(originaldata));print(summary(xmoddata)) }
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(xmod) }
+          if(imp==1 & cyclenum == 8 & targetCol == 28) {print(xmod) }
           newbeta <- modPostDraw(xmod)
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol == 5) {print(newbeta) }
+          if(imp==1 & cyclenum == 8 & targetCol == 28) {print(newbeta) }
           if ((smtype == "casecohort") | (smtype == "nestedcc")) {
             xfitted <- expit(model.matrix(xmodformula, data = imputations[[imp]]) %*% newbeta)
           } else {
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol == 5) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
+            if(imp==1 & cyclenum == 8 & targetCol == 28) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
             xfitted <- expit(model.matrix(xmod) %*% newbeta)
 
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol == 5) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
+            if(imp==1 & cyclenum == 8 & targetCol == 28) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
           }
         } else if (method[targetCol] == "poisson") {
           xmod <- glm(xmodformula, family = "poisson", data = xmoddata)
@@ -1037,7 +1037,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             numberOutcomes <- 2
             fittedMean <- cbind(1 - xfitted, xfitted)
             # Debug: 
-            if(imp==1 & cyclenum == 8 & targetCol == 5) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"fittedMean:"));print(fittedMean[imputationNeeded,])}
+            if(imp==1 & cyclenum == 8 & targetCol == 28) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"fittedMean:"));print(fittedMean[imputationNeeded,])}
           } else {
             numberOutcomes <- nlevels(imputations[[imp]][, targetCol])
             # Debug:
