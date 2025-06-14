@@ -1111,7 +1111,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             }
 
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol == 5) {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
+            if(imp==1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
             outcomeDensCovDens[, xMisVal] <- outcomeDens * fittedMean[imputationNeeded, xMisVal]
           }
 
@@ -1130,11 +1130,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
 
           directImpProbs <- outcomeDensCovDens / rowSums(outcomeDensCovDens)
            # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
-          if(imp == 1 & cyclenum == 8 & targetCol == 27) {print(paste0("latest",imputationNeeded));print("latest");print(directImpProbs)}  
+          if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print("imputationNeeded,latest and directImpProbs");print(imputationNeeded) print(imputations[[imp]][imputationNeeded, targetCol]);print(directImpProbs)}  
             directImpProbs[is.na(directImpProbs)] <- 0  
             imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
             # Debug:
-          print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"imputationNeeded,updated",c(imputationNeeded)))
+          print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"imputationNeeded,updated")));print(imputationNeeded)
             
 
 
@@ -1142,10 +1142,13 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             directImpProbs <- directImpProbs[, 2]
             if (is.factor(imputations[[imp]][, targetCol]) == TRUE) {
               # Debug:
-              if(imp == 1 & cyclenum == 8 & targetCol == 27) {print("updated");print(na.omit(directImpProbs))}  
+              if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print("updated");print(na.omit(directImpProbs))}  
               
               imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[1]
+              if(imp == 1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(imputations[[imp]][imputationNeeded, targetCol])}  
+              
               imputations[[imp]][imputationNeeded, targetCol][rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) == 1] <- levels(imputations[[imp]][, targetCol])[2]
+              print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol)))
             } else {
               imputations[[imp]][imputationNeeded, targetCol] <- rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) # Debug
             }
