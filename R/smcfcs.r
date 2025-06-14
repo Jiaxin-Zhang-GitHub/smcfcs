@@ -809,8 +809,15 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           xmod.dummy <- VGAM::vglm(xmodformula, VGAM::multinomial(refLevel = 1), data = imputations[[imp]])
           newbeta <- VGAM::coef(xmod) + MASS::mvrnorm(1, mu = rep(0, ncol(VGAM::vcov(xmod))), Sigma = VGAM::vcov(xmod))
           linpreds <- matrix((VGAM::model.matrix(xmod.dummy)) %*% newbeta, byrow = TRUE, ncol = (nlevels(imputations[[imp]][, targetCol]) - 1))
+          
+          # Debug:
+          print(paste0("imputation",imp,"iteration",cyclenum,"linpreds"))
+          print(linpreds)
           denom <- 1 + rowSums(exp(linpreds))
+          print("denom");print(denom)
           xfitted <- cbind(1 / denom, exp(linpreds) / denom)
+          print("xfitted");print(xfitted)
+          
         }
         if (noisy == TRUE) {
           print(summary(xmod))
@@ -1019,6 +1026,8 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             fittedMean <- cbind(1 - xfitted, xfitted)
           } else {
             numberOutcomes <- nlevels(imputations[[imp]][, targetCol])
+            # Debug:
+            print(paste0("numberOutcomes",numberOutcomes))
             fittedMean <- xfitted
           }
 
@@ -1088,7 +1097,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             }
 
             # Debug:
-            if(method[targetCol] == "mlogit") {print(fittedMean[imputationNeeded, xMisVal])}
+            if(method[targetCol] == "mlogit") {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
             outcomeDensCovDens[, xMisVal] <- outcomeDens * fittedMean[imputationNeeded, xMisVal]
           }
 
