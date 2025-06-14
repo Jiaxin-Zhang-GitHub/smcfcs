@@ -707,6 +707,9 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           xmoddata <- imputations[[imp]]
         }
         if (method[targetCol] == "norm") {
+          # Debug: 
+          print.ind <- (1:n)[r[, targetCol] == 0]
+          
           # estimate parameters of covariate model
           xmod <- lm(xmodformula, data = xmoddata)
           # take draw from posterior of covariate model parameters
@@ -721,6 +724,10 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           } else {
             xfitted <- model.matrix(xmod) %*% newbeta
           }
+          # Debug: 
+        
+          print(xfitted[print.ind])
+          
         } else if (method[targetCol] == "latnorm") {
           # estimate parameters of covariate model
           xmod <- lm(xmodformula, data = xmoddata)
@@ -776,19 +783,19 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           if(imp==1 & cyclenum == 8 & targetCol > 26) {print(summary(originaldata));print(summary(xmoddata)) }
           xmod <- glm(xmodformula, family = "binomial", data = xmoddata, method = brglm2::brglmFit)
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol > 27) {print(xmod) }
+          #if(imp==1 & cyclenum == 8 & targetCol > 27) {print(xmod) }
           newbeta <- modPostDraw(xmod)
           # Debug:
-          if(imp==1 & cyclenum == 8 & targetCol > 27) {print(newbeta) }
+          #if(imp==1 & cyclenum == 8 & targetCol > 27) {print(newbeta) }
           if ((smtype == "casecohort") | (smtype == "nestedcc")) {
             xfitted <- expit(model.matrix(xmodformula, data = imputations[[imp]]) %*% newbeta)
           } else {
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol > 27) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
+           # if(imp==1 & cyclenum == 8 & targetCol > 27) {print.ind <- (1:n)[r[, targetCol] == 0]; print(model.matrix(xmod)[print.ind])}
             xfitted <- expit(model.matrix(xmod) %*% newbeta)
 
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol > 27) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
+            #if(imp==1 & cyclenum == 8 & targetCol > 27) {print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"xfitted:"));print(xfitted[print.ind,])}  
           }
         } else if (method[targetCol] == "poisson") {
           xmod <- glm(xmodformula, family = "poisson", data = xmoddata)
@@ -1115,7 +1122,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             }
 
             # Debug:
-            if(imp==1 & cyclenum == 8 & targetCol %in% c(27,28)) {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
+            #if(imp==1 & cyclenum == 8 & targetCol > 27) {print(paste0("xMisVal",xMisVal,"fittedMean[imputationNeeded, xMisVal]"));print(fittedMean[imputationNeeded, xMisVal])}
             outcomeDensCovDens[, xMisVal] <- outcomeDens * fittedMean[imputationNeeded, xMisVal]
           }
 
@@ -1134,7 +1141,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
 
           directImpProbs <- outcomeDensCovDens / rowSums(outcomeDensCovDens)
            # Debug: If directImpProbs happens to be infinite, skip imputation for this iteration  
-          if(imp == 1 & cyclenum == 8 & targetCol > 27) {print("imputationNeeded,latest and directImpProbs");print(imputationNeeded); print(imputations[[imp]][imputationNeeded, targetCol]);print(directImpProbs)}  
+          #if(imp == 1 & cyclenum == 8 & targetCol > 27) {print("imputationNeeded,latest and directImpProbs");print(imputationNeeded); print(imputations[[imp]][imputationNeeded, targetCol]);print(directImpProbs)}  
             directImpProbs[is.na(directImpProbs)] <- 0  
             imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
             # Debug:
@@ -1146,12 +1153,12 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             directImpProbs <- directImpProbs[, 2]
             if (is.factor(imputations[[imp]][, targetCol]) == TRUE) {
               # Debug:
-              if(imp == 1 & cyclenum == 8 & targetCol > 27) {print("updated");print(na.omit(directImpProbs))}  
+              #if(imp == 1 & cyclenum == 8 & targetCol > 27) {print("updated");print(na.omit(directImpProbs))}  
               
               imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[1]
-              if(imp == 1 & cyclenum == 8 & targetCol > 27) {print(imputations[[imp]][imputationNeeded, targetCol])}  
+              #if(imp == 1 & cyclenum == 8 & targetCol > 27) {print(imputations[[imp]][imputationNeeded, targetCol])}  
               test.ind <- rbinom(length(imputationNeeded), 1, na.omit(directImpProbs)) == 1 #
-              if(imp == 1 & cyclenum == 8 & targetCol > 27) {print(test.ind); print(levels(imputations[[imp]][, targetCol])[2]); print(imputations[[imp]][imputationNeeded, targetCol][test.ind])}  
+              #if(imp == 1 & cyclenum == 8 & targetCol > 27) {print(test.ind); print(levels(imputations[[imp]][, targetCol])[2]); print(imputations[[imp]][imputationNeeded, targetCol][test.ind])}  
               imputations[[imp]][imputationNeeded, targetCol][test.ind] <- levels(imputations[[imp]][, targetCol])[2]
               print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol))
             } else {
@@ -1166,10 +1173,10 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             #directImpProbs[is.na(directImpProbs)] <- 0  
             #imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
             
-            print(paste0("update",imputationNeeded))
-            print(directImpProbs)
+            #print(paste0("update",imputationNeeded))
+            #print(directImpProbs)
             imputations[[imp]][imputationNeeded, targetCol] <- levels(imputations[[imp]][, targetCol])[na.omit(apply(directImpProbs, 1, catdraw))]
-            print(imputations[[imp]][imputationNeeded, targetCol])          
+            #print(imputations[[imp]][imputationNeeded, targetCol])          
           }
           # Debug:
           print("if imputation for var 27 is finished")
@@ -1177,6 +1184,9 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           # update passive variables
           imputations[[imp]] <- updatePassiveVars(imputations[[imp]], method, passiveVars)
         } else {
+          # Debug:
+          print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol))
+          
           # use rejection sampling
           # first draw for all subjects who need imputing, using a small number of attempts
           firstTryLimit <- 25
@@ -1185,7 +1195,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           while ((length(imputationNeeded) > 0) & (j < firstTryLimit)) {
             # sample from covariate model
             if ((method[targetCol] == "norm") | (method[targetCol] == "latnorm")) {
-              imputations[[imp]][imputationNeeded, targetCol] <- rnorm(length(imputationNeeded), xfitted[imputationNeeded], newsigmasq^0.5)
+              # Debug: 
+              print("norm.imp"); print(imputationNeeded); print(imputations[[imp]][imputationNeeded, targetCol])
+              sample.ind <-  rnorm(length(imputationNeeded), xfitted[imputationNeeded], newsigmasq^0.5)
+              print(sample.ind)
+              imputations[[imp]][imputationNeeded, targetCol] <- sample.ind #rnorm(length(imputationNeeded), xfitted[imputationNeeded], newsigmasq^0.5)
             } else if (method[targetCol] == "poisson") {
               imputations[[imp]][imputationNeeded, targetCol] <- rpois(length(imputationNeeded), xfitted[imputationNeeded])
             }
