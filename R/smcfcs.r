@@ -1134,7 +1134,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             directImpProbs[is.na(directImpProbs)] <- 0  
             imputationNeeded <- imputationNeeded[rowSums(directImpProbs) > 0]
             # Debug:
-          print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"imputationNeeded,updated")));print(imputationNeeded)
+          print(paste0("imputation",imp,"literation",cyclenum,"variable",targetCol,"imputationNeeded,updated"));print(imputationNeeded)
             
 
 
