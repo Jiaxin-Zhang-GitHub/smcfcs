@@ -655,7 +655,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           imputations[[imp]][imputationNeeded, outcomeCol] <- 0
           outmodxb <- model.matrix(as.formula(smformula), imputations[[imp]]) %*% beta
           prob <- expit(outmodxb[imputationNeeded])
-          imputations[[imp]][imputationNeeded, outcomeCol] <- rbinom(length(imputationNeeded), 1, prob)
+          # Debug: If probs happens to be infinite, skip imputation for this iteration  
+            prob[is.na(prob)] <- 0  
+            imputationNeeded <- imputationNeeded[prob > 0]
+            imputations[[imp]][imputationNeeded, outcomeCol] <- rbinom(length(imputationNeeded), 1, na.omit(prob)) # Debug
+
         } else if (smtype == "poisson") {
           ymod <- glm(as.formula(smformula), family = "poisson", imputations[[imp]])
           beta <- ymod$coef
@@ -677,8 +681,9 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
         for (var in 1:length(partialVars)) {
         targetCol <- partialVars[var]
           # Debug:
-          print(paste("imputation",imp,"iteration",cyclenum,"variable",var,"varname",colnames(imputations[[imp]])[targetCol]))
-          if(sum(complete.cases(imputations[[imp]])) < nrow(imputations[[imp]])){print(summary(imputations[[imp]]))}
+          if(sum(complete.cases(imputations[[imp]])) < nrow(imputations[[imp]])){
+            print(paste("imputation",imp,"iteration",cyclenum,"variable",var,"varname",colnames(imputations[[imp]])[targetCol]))
+            save(imputations, file = "/group/cebu1/BACKUP/Jiaxin/MYPS/test.Rda")}
                                                                                        
         if (is.null(predictorMatrix)) {
           predictorCols <- c(partialVars[!partialVars %in% targetCol], fullObsVars)
