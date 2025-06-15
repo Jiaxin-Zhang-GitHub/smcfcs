@@ -678,7 +678,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
         targetCol <- partialVars[var]
           # Debug:
           print(paste("imputation",imp,"iteration",cyclenum,"variable",var,"varname",colnames(imputations[[imp]])[targetCol]))
-          if(sum(complete.cases(imputations[[imp]])) < nrow(imputations[[imp]])){print(summary(imputations[[imp]])}
+          if(sum(complete.cases(imputations[[imp]])) < nrow(imputations[[imp]])){print(summary(imputations[[imp]]))}
                                                                                        
         if (is.null(predictorMatrix)) {
           predictorCols <- c(partialVars[!partialVars %in% targetCol], fullObsVars)
