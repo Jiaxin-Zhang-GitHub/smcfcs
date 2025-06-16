@@ -652,7 +652,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             )
           }
           beta <- ymod$coef
-          imputations[[imp]][imputationNeeded, outcomeCol] <- 
+          imputations[[imp]][imputationNeeded, outcomeCol] <- 0
           # Debug: If ymod has NA or Inf
           test <- model.matrix(as.formula(smformula), imputations[[imp]])
           if(ncol(test) != length(beta)){print(beta); print(head(test)); save(imputations, file = "/group/cebu1/BACKUP/Jiaxin/MYPS/test.Rda")}
