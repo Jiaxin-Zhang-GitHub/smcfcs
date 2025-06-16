@@ -1471,8 +1471,6 @@ modPostDraw <- function(modobj) {
   varcov[is.na(varcov) | is.infinite(varcov)] <- 0
   beta + MASS::mvrnorm(1, mu = rep(0, ncol(varcov)), Sigma = varcov)
 }
-  beta + MASS::mvrnorm(1, mu = rep(0, ncol(varcov)), Sigma = varcov)
-}
 
 # a helper function which calculates the substantive model probability value
 # for each individual for the discrete time survival (logistic) substantive model
