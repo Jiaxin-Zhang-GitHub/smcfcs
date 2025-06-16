@@ -652,9 +652,11 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
             )
           }
           beta <- ymod$coef
+          imputations[[imp]][imputationNeeded, outcomeCol] <- 
           # Debug: If ymod has NA or Inf
-          beta[is.na(beta) | is.infinite(beta)] <- 0
-          imputations[[imp]][imputationNeeded, outcomeCol] <- 0
+          test <- model.matrix(as.formula(smformula), imputations[[imp]]
+          if(ncol(test) != length(beta)){print(beta); print(head(test)); save(imputations, file = "/group/cebu1/BACKUP/Jiaxin/MYPS/test.Rda")}
+          #beta[is.na(beta) | is.infinite(beta)] <- 0
           outmodxb <- model.matrix(as.formula(smformula), imputations[[imp]]) %*% beta
           prob <- expit(outmodxb[imputationNeeded])
           # Debug: If probs happens to be infinite, skip imputation for this iteration  
