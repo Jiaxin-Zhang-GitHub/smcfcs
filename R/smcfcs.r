@@ -679,12 +679,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
 
       if (length(partialVars)>0) {
         for (var in 1:length(partialVars)) {
-        targetCol <- partialVars[var]
-          # Debug:
-          if(sum(complete.cases(imputations[[imp]])) < nrow(imputations[[imp]])){
-            print(paste("imputation",imp,"iteration",cyclenum,"variable",var,"varname",colnames(imputations[[imp]])[targetCol]))
-            save(imputations, file = "/group/cebu1/BACKUP/Jiaxin/MYPS/test.Rda")}
-                                                                                       
+        targetCol <- partialVars[var]                                                                     
         if (is.null(predictorMatrix)) {
           predictorCols <- c(partialVars[!partialVars %in% targetCol], fullObsVars)
         } else {
@@ -1471,6 +1466,11 @@ catdraw <- function(prob) {
 modPostDraw <- function(modobj) {
   beta <- modobj$coef
   varcov <- vcov(modobj)
+  # Debug: If modobj has NA or Inf
+  beta[is.na(beta) | is.infinite(beta)] <- 0
+  varcov[is.na(varcov) | is.infinite(varcov)] <- 0
+  beta + MASS::mvrnorm(1, mu = rep(0, ncol(varcov)), Sigma = varcov)
+}
   beta + MASS::mvrnorm(1, mu = rep(0, ncol(varcov)), Sigma = varcov)
 }
 
