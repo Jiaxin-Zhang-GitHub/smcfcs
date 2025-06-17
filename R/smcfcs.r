@@ -431,6 +431,13 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           sep = ""
         ))
       } else {
+        # Debug: When using bootSmcfcs, drop levels if a categorical variable happens to violate positivity in the boot sample.
+        if(length(levels(droplevels(originaldata[,colnum]))) < length(levels(originaldata[,colnum]))) {
+          originaldata[,colnum] <- droplevels(originaldata[,colnum])
+          if(levels(med.data$q1cobcat) < 3 | method[colnum] == "mlogit") {
+            method[colnum] <- "brlogreg"
+          }
+        }
         # Debug: When using bootSmcfcs, ignore the imputation method if a variable is originally incomplete but happened to be complete in the boot sample.
         if (sum(r[, colnum]) == n) {
            #stop(paste("An imputation method has been specified for ", colnames(originaldata)[colnum],
