@@ -434,7 +434,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
         # Debug: When using bootSmcfcs, drop levels if a categorical variable happens to violate positivity in the boot sample.
         if(length(levels(droplevels(originaldata[,colnum]))) < length(levels(originaldata[,colnum]))) {
           originaldata[,colnum] <- droplevels(originaldata[,colnum])
-          if(levels(med.data$q1cobcat) < 3 | method[colnum] == "mlogit") {
+          if(length(levels(med.data$q1cobcat)) < 3 & method[colnum] == "mlogit") {
             method[colnum] <- "brlogreg"
           }
         }
