@@ -662,7 +662,7 @@ smcfcs.core <- function(originaldata, smtype, smformula, method, predictorMatrix
           imputations[[imp]][imputationNeeded, outcomeCol] <- 0
           # Debug: If ymod has NA or Inf
           test <- model.matrix(as.formula(smformula), imputations[[imp]])
-          print(beta); print(head(test))
+          # print(beta); print(head(test))
           # beta[is.na(beta) | is.infinite(beta)] <- 0
           outmodxb <- model.matrix(as.formula(smformula), imputations[[imp]]) %*% beta
           prob <- expit(outmodxb[imputationNeeded])
